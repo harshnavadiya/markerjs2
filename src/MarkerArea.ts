@@ -12,6 +12,7 @@ import { StyleManager, Style } from './core/Style';
 import { LineMarker } from './markers/line-marker/LineMarker';
 import { TextMarker } from './markers/text-marker/TextMarker';
 import { FreehandMarker } from './markers/freehand-marker/FreehandMarker';
+import { PenTool } from './markers/pan/PenTool';
 import { ArrowMarker } from './markers/arrow-marker/ArrowMarker';
 import { CoverMarker } from './markers/cover-marker/CoverMarker';
 import { HighlightMarker } from './markers/highlight-marker/HighlightMarker';
@@ -139,6 +140,7 @@ export class MarkerArea {
       LineMarker,
       CurveMarker,
       CaptionFrameMarker,
+      PenTool
     ];
   }
 
@@ -254,7 +256,7 @@ export class MarkerArea {
 
   /**
    * Returns true if undo operation can be performed (undo stack is not empty).
-   * 
+   *
    * @since 2.26.0
    */
   public get isUndoPossible(): boolean {
@@ -267,7 +269,7 @@ export class MarkerArea {
 
   /**
    * Returns true if redo operation can be performed (redo stack is not empty).
-   * 
+   *
    * @since 2.26.0
    */
    public get isRedoPossible(): boolean {
@@ -841,7 +843,7 @@ export class MarkerArea {
     // workaround to prevent a bug with Apple Pencil
     // https://bugs.webkit.org/show_bug.cgi?id=217430
     this.markerImage.addEventListener('touchmove', ev => ev.preventDefault());
-    
+
     this.markerImage.addEventListener('dblclick', this.onDblClick);
     this.attachWindowEvents();
   }
@@ -963,12 +965,12 @@ export class MarkerArea {
     switch (this.settings.displayMode) {
       case 'inline': {
         this.coverDiv.style.position = 'absolute';
-        const coverTop = this.settings.uiOffsetTop !== undefined ? 
+        const coverTop = this.settings.uiOffsetTop !== undefined ?
           this.target.offsetTop + this.settings.uiOffsetTop :
             this.target.offsetTop > this.styles.settings.toolbarHeight
               ? this.target.offsetTop - this.styles.settings.toolbarHeight
               : 0;
-        const coverLeft = this.target.offsetLeft + (this.settings.uiOffsetLeft ?? 0); 
+        const coverLeft = this.target.offsetLeft + (this.settings.uiOffsetLeft ?? 0);
         this.coverDiv.style.top = `${coverTop}px`;
         this.coverDiv.style.left = `${coverLeft}px`;
         this.coverDiv.style.width = `${this.target.offsetWidth.toString()}px`;
@@ -1069,8 +1071,8 @@ export class MarkerArea {
       this.target instanceof HTMLImageElement
         ? document.createElement('img')
         : document.createElement('canvas');
-    if (this.settings.displayMode === 'inline' 
-      && this.settings.uiOffsetTop === undefined 
+    if (this.settings.displayMode === 'inline'
+      && this.settings.uiOffsetTop === undefined
       && this.target.offsetTop < this.styles.settings.toolbarHeight) {
       this.editingTarget.style.marginTop = `${
         this.target.offsetTop - this.styles.settings.toolbarHeight

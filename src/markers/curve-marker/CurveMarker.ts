@@ -13,12 +13,12 @@ import { ResizeGrip } from '../ResizeGrip';
 
 export class CurveMarker extends LinearMarkerBase {
   /**
-   * String type name of the marker type. 
-   * 
+   * String type name of the marker type.
+   *
    * Used when adding {@link MarkerArea.availableMarkerTypes} via a string and to save and restore state.
    */
   public static typeName = 'CurveMarker';
-  
+
   /**
    * Marker type title (display name) used for accessibility and other attributes.
    */
@@ -120,7 +120,7 @@ export class CurveMarker extends LinearMarkerBase {
 
   /**
    * Returns true if passed SVG element belongs to the marker. False otherwise.
-   * 
+   *
    * @param el - target element.
    */
   public ownsTarget(el: EventTarget): boolean {
@@ -168,7 +168,7 @@ export class CurveMarker extends LinearMarkerBase {
 
   /**
    * Handles pointer (mouse, touch, stylus, etc.) down event.
-   * 
+   *
    * @param point - event coordinates.
    * @param target - direct event target element.
    */
@@ -330,7 +330,7 @@ export class CurveMarker extends LinearMarkerBase {
 
   /**
    * Scales marker. Used after the image resize.
-   * 
+   *
    * @param scaleX - horizontal scale
    * @param scaleY - vertical scale
    */
@@ -340,6 +340,17 @@ export class CurveMarker extends LinearMarkerBase {
     super.scale(scaleX, scaleY);
   }
 
+
+  /**
+   * Called by a marker when its foreground color changes.
+   * @param color
+   */
+  protected colorChanged(color: string): void {
+    if (this.onColorChanged) {
+      this.onColorChanged(color);
+    }
+    this.stateChanged();
+  }
 
   /**
    * Returns the list of toolbox panels for this marker type.
@@ -366,7 +377,7 @@ export class CurveMarker extends LinearMarkerBase {
 
   /**
    * Restores previously saved marker state.
-   * 
+   *
    * @param state - previously saved state.
    */
   public restoreState(state: MarkerBaseState): void {
